@@ -98,7 +98,11 @@ public class PluginRef {
     }
 
     public boolean isUnpack() {
-        return Boolean.parseBoolean(dom.getAttributeValue("unpack"));
+        String unpackValue = dom.getAttributeValue("unpack");
+        if (unpackValue == null) {
+            return Boolean.TRUE;
+        }
+        return Boolean.parseBoolean(unpackValue);
     }
 
     public void setUnpack(boolean unpack) {

@@ -71,6 +71,7 @@ public class EclipseModelTest extends TestCase {
         List<PluginRef> plugins = feature.getPlugins();
         assertEquals(1, plugins.size());
         assertEquals("pluginA", plugins.get(0).getId());
+        assertEquals(true, plugins.get(0).isUnpack());
 
         List<FeatureRef> features = feature.getIncludedFeatures();
         assertEquals(1, features.size());
