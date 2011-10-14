@@ -16,10 +16,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -57,6 +59,7 @@ import org.eclipse.tycho.core.osgitools.BundleReader;
 import org.eclipse.tycho.core.utils.PlatformPropertiesUtils;
 import org.eclipse.tycho.core.utils.TychoProjectUtils;
 import org.eclipse.tycho.model.BundleConfiguration;
+import org.eclipse.tycho.model.LauncherArguments;
 import org.eclipse.tycho.model.ProductConfiguration;
 
 /**
@@ -159,6 +162,7 @@ public class ProductExportMojo extends AbstractTychoPackagingMojo {
 
                 generateDotEclipseProduct(targetEclipse);
                 generateConfigIni(environment, targetEclipse);
+                generateLauncherIni(environment, targetEclipse);
                 includeRootFiles(environment, targetEclipse);
 
                 ProductAssembler assembler = new ProductAssembler(session, manifestReader, targetEclipse, environment);
@@ -182,6 +186,7 @@ public class ProductExportMojo extends AbstractTychoPackagingMojo {
             generateConfigIni(null, targetEclipse);
 
             for (TargetEnvironment environment : getEnvironments()) {
+                generateLauncherIni(environment, targetEclipse);
                 includeRootFiles(environment, targetEclipse);
             }
 
@@ -220,6 +225,64 @@ public class ProductExportMojo extends AbstractTychoPackagingMojo {
 
         if (!createProductArchive || environments != null) {
             project.getArtifact().setFile(expandedProductFile);
+        }
+    }
+
+    private void generateLauncherIni(TargetEnvironment environment, File target) throws MojoExecutionException {
+        // create a ini file with the same name for the native launcher
+        getLog().debug("Generating launcher.ini");
+
+        LauncherArguments launcherArguments = productConfiguration.getLauncherArguments();
+
+        final List<String> vmArgs = new ArrayList<String>();
+        final List<String> programArgs = new ArrayList<String>();
+
+        vmArgs.addAll(launcherArguments.getVMArgs());
+        programArgs.addAll(launcherArguments.getProgramArgs());
+
+        String os = environment.getOs();
+        if (os != null) {
+            if (PlatformPropertiesUtils.OS_WIN32.equals(os)) {
+                vmArgs.addAll(launcherArguments.getWindowsVMArgs());
+                programArgs.addAll(launcherArguments.getWindowsProgramArgs());
+            }
+
+            if (PlatformPropertiesUtils.OS_LINUX.equals(os) || PlatformPropertiesUtils.OS_HPUX.equals(os)
+                    || PlatformPropertiesUtils.OS_AIX.equals(os)) {
+                vmArgs.addAll(launcherArguments.getLinuxVMArgs());
+                programArgs.addAll(launcherArguments.getLinuxProgramArgs());
+            }
+
+            if (PlatformPropertiesUtils.OS_SOLARIS.equals(os)) {
+                vmArgs.addAll(launcherArguments.getSolarisVMArgs());
+                programArgs.addAll(launcherArguments.getSolarisProgramArgs());
+
+            }
+            if (PlatformPropertiesUtils.OS_MACOSX.equals(os)) {
+                vmArgs.addAll(launcherArguments.getMacVMArgs());
+                programArgs.addAll(launcherArguments.getMacProgramArgs());
+            }
+        }
+
+        File configFile = new File(target, productConfiguration.getLauncher().getName() + ".ini");
+        try {
+            FileWriter fw = new FileWriter(configFile);
+
+            // standard program arguments
+            for (String programArg : programArgs) {
+                fw.write(programArg + "\n");
+            }
+
+            // append the -vmargs option
+            if (!vmArgs.isEmpty()) {
+                fw.write("-vmargs\n");
+                for (String vmArg : vmArgs) {
+                    fw.write(vmArg + "\n");
+                }
+            }
+            fw.close();
+        } catch (IOException e) {
+            throw new MojoExecutionException("Error creating launcher ini file.", e);
         }
     }
 

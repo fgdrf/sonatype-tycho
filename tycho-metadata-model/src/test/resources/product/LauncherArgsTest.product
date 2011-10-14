@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.4"?>
+
+<product name="LauncherArgsTest" id="LauncherArgsTest.product" application="MyFirstRCP.application" version="1.0.0" useFeatures="false">
+
+   <windowImages/>
+
+   <launcherArgs>
+      <programArgs>-all all</programArgs>
+      <programArgsLin>-linux linux</programArgsLin>
+      <programArgsMac>-mac mac</programArgsMac>
+      <programArgsSol>-solaris solaris</programArgsSol>
+      <programArgsWin>-win32 win32</programArgsWin>
+      <vmArgs>-all vmall</vmArgs>
+      <vmArgsLin>-linux vmlinux</vmArgsLin>
+      <vmArgsMac>-mac vmmac</vmArgsMac>
+      <vmArgsSol>-solaris vmsolaris</vmArgsSol>
+      <vmArgsWin>-win32 vmwin32</vmArgsWin>
+   </launcherArgs>
+
+</product>

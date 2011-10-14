@@ -115,6 +115,14 @@ public class ProductConfiguration {
         return new Launcher(domLauncher);
     }
 
+    public LauncherArguments getLauncherArguments() {
+        Element domLauncherArgs = dom.getChild("launcherArgs");
+        if (domLauncherArgs == null) {
+            return null;
+        }
+        return new LauncherArguments(domLauncherArgs);
+    }
+
     public String getName() {
         return dom.getAttributeValue("name");
     }

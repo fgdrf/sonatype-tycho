@@ -18,11 +18,43 @@ import junit.framework.Assert;
 import org.eclipse.tycho.model.BundleConfiguration;
 import org.eclipse.tycho.model.FeatureRef;
 import org.eclipse.tycho.model.Launcher;
+import org.eclipse.tycho.model.LauncherArguments;
 import org.eclipse.tycho.model.PluginRef;
 import org.eclipse.tycho.model.ProductConfiguration;
 import org.junit.Test;
 
 public class ProductConfigurationParseTest {
+
+    @Test
+    public void testLauncherArgsParse() throws Exception {
+        ProductConfiguration config = ProductConfiguration.read(getClass().getResourceAsStream(
+                "/product/LauncherArgsTest.product"));
+
+        LauncherArguments launcherArgs = config.getLauncherArguments();
+        testArgsOneAndTwo(launcherArgs.getProgramArgs(), "-all", "all");
+        testArgsOneAndTwo(launcherArgs.getLinuxProgramArgs(), "-linux", "linux");
+        testArgsOneAndTwo(launcherArgs.getMacProgramArgs(), "-mac", "mac");
+        testArgsOneAndTwo(launcherArgs.getSolarisProgramArgs(), "-solaris", "solaris");
+        testArgsOneAndTwo(launcherArgs.getWindowsProgramArgs(), "-win32", "win32");
+
+        testArgsOneAndTwo(launcherArgs.getVMArgs(), "-all", "vmall");
+        testArgsOneAndTwo(launcherArgs.getLinuxVMArgs(), "-linux", "vmlinux");
+        testArgsOneAndTwo(launcherArgs.getMacVMArgs(), "-mac", "vmmac");
+        testArgsOneAndTwo(launcherArgs.getSolarisVMArgs(), "-solaris", "vmsolaris");
+        testArgsOneAndTwo(launcherArgs.getWindowsVMArgs(), "-win32", "vmwin32");
+    }
+
+    private void testArgsOneAndTwo(List<String> arguments, String expectedOne, String expectedSecond) {
+
+        Assert.assertNotNull(expectedOne);
+        Assert.assertNotNull(expectedSecond);
+
+        Assert.assertNotNull(arguments);
+        Assert.assertEquals(2, arguments.size());
+
+        Assert.assertEquals(expectedOne, arguments.get(0));
+        Assert.assertEquals(expectedSecond, arguments.get(1));
+    }
 
     @Test
     public void testProductConfigurationParse() throws Exception {
