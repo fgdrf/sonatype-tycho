@@ -154,10 +154,17 @@ public class ProductExportMojo extends AbstractTychoPackagingMojo {
             throw new MojoFailureException("Product includes native launcher but no target environment was specified");
         }
 
+        // TCHO-298 (launcher folder name should be launcher name) 
+        String launcherName = "eclipse";
+        if (productConfiguration.getLauncher() != null && productConfiguration.getLauncher().getName() != null) {
+            launcherName = productConfiguration.getLauncher().getName();
+        }
+
         if (separateEnvironments) {
+
             for (TargetEnvironment environment : getEnvironments()) {
                 File target = getTarget(environment);
-                File targetEclipse = new File(target, "eclipse");
+                File targetEclipse = new File(target, launcherName);
                 targetEclipse.mkdirs();
 
                 generateDotEclipseProduct(targetEclipse);
@@ -179,7 +186,7 @@ public class ProductExportMojo extends AbstractTychoPackagingMojo {
             }
         } else {
             File target = getTarget(null);
-            File targetEclipse = new File(target, "eclipse");
+            File targetEclipse = new File(target, launcherName);
             targetEclipse.mkdirs();
 
             generateDotEclipseProduct(targetEclipse);
