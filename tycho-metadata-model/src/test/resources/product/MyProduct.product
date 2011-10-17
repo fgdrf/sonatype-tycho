@@ -3,6 +3,7 @@
 
 <product name="My First RCP" id="MyFirstRCP.product1" application="MyFirstRCP.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
+
    <configIni use="">
       <linux>linux.ini</linux>
       <macosx>macosx.ini</macosx>
@@ -25,6 +26,8 @@
 
    <windowImages/>
 
+   <splash
+      location="org.sonatype.tycho.splashLocation" />
    <launcher name="launchername">
       <linux icon="XPM"/>
       <macosx icon="icns"/>
@@ -45,8 +48,10 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="HeadlessProduct" fragment=""/>

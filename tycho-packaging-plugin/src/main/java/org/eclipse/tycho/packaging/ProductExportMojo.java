@@ -502,12 +502,13 @@ public class ProductExportMojo extends AbstractTychoPackagingMojo {
             MojoFailureException {
         getLog().debug("Generating config.ini");
         Properties props = new Properties();
-        String id = productConfiguration.getProduct();
-        if (id != null) {
-            String splash = id.split("\\.")[0];
+
+        String splash = productConfiguration.getSplashLocation();
+        if (splash != null) {
             setPropertyIfNotNull(props, "osgi.splashPath", "platform:/base/plugins/" + splash);
         }
 
+        String id = productConfiguration.getProduct();
         setPropertyIfNotNull(props, "eclipse.product", id);
         // TODO check if there are any other levels
         setPropertyIfNotNull(props, "osgi.bundles.defaultStartLevel", "4");

@@ -282,4 +282,12 @@ public class ProductConfiguration {
 
     }
 
+    public String getSplashLocation() {
+        Element domSplash = dom.getChild("splash");
+        if (domSplash == null) {
+            return null;
+        }
+        return domSplash.getAttributeValue("location");
+    }
+
 }

@@ -142,4 +142,14 @@ public class ProductConfigurationParseTest {
 
     }
 
+    @Test
+    public void testSplashLocation() throws Exception {
+        ProductConfiguration config = ProductConfiguration.read(getClass().getResourceAsStream(
+                "/product/MyProduct.product"));
+
+        String splashLocation = config.getSplashLocation();
+
+        Assert.assertNotNull(splashLocation);
+        Assert.assertEquals("org.sonatype.tycho.splashLocation", splashLocation);
+    }
 }
